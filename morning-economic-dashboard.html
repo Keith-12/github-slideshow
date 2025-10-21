@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌅 朝の経済分析レポート - ダッシュボード</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .date-info {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .summary-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .summary-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #34495e;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .metric-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .positive {
+            color: #27ae60;
+        }
+
+        .negative {
+            color: #e74c3c;
+        }
+
+        .neutral {
+            color: #f39c12;
+        }
+
+        .metric-change {
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .metric-description {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            line-height: 1.5;
+        }
+
+        .news-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .news-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #e74c3c;
+            padding-bottom: 10px;
+        }
+
+        .news-item {
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .news-item h4 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .news-item p {
+            color: #34495e;
+            line-height: 1.6;
+        }
+
+        .news-time {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .refresh-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background: #2980b9;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>🌅 朝の経済分析レポート</h1>
+            <div class="date-info" id="currentDate"></div>
+            <button class="refresh-btn" onclick="refreshData()">🔄 データ更新</button>
+        </div>
+
+        <div class="summary-section">
+            <h2 class="summary-title">📊 本日のサマリー</h2>
+            <div class="summary-content">
+                <p><strong>市場概況：</strong> アジア市場は前日比で小幅上昇、日経平均は前日比+0.3%で始まりました。米国市場の好調な決算発表を受けて、テクノロジー株を中心に買いが優勢です。</p>
+                <br>
+                <p><strong>注目ポイント：</strong> 本日は日銀金融政策決定会合の結果発表が予定されており、市場の注目度が高まっています。また、米国の雇用統計発表も控えており、為替市場の動向に注意が必要です。</p>
+                <br>
+                <p><strong>投資戦略：</strong> 短期的には政策発表を待つ姿勢が強く、中長期的には企業業績の改善期待からリスクオン気運が継続する見込みです。</p>
+            </div>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <h3 class="metric-title">📈 日経平均</h3>
+                <div class="metric-value positive">33,445.90</div>
+                <div class="metric-change positive">+98.50 (+0.30%)</div>
+                <div class="metric-description">前日比で小幅上昇。テクノロジー株の買いが主導</div>
+            </div>
+
+            <div class="metric-card">
+                <h3 class="metric-title">💱 USD/JPY</h3>
+                <div class="metric-value neutral">149.85</div>
+                <div class="metric-change positive">+0.25 (+0.17%)</div>
+                <div class="metric-description">ドル高円安が継続。政策金利差が影響</div>
+            </div>
+
+            <div class="metric-card">
+                <h3 class="metric-title">🛢️ WTI原油</h3>
+                <div class="metric-value negative">$78.45</div>
+                <div class="metric-change negative">-$1.20 (-1.51%)</div>
+                <div class="metric-description">需要懸念により下落。中国経済指標が影響</div>
+            </div>
+
+            <div class="metric-card">
+                <h3 class="metric-title">🥇 金価格</h3>
+                <div class="metric-value positive">$2,045.30</div>
+                <div class="metric-change positive">+$12.50 (+0.61%)</div>
+                <div class="metric-description">安全資産としての需要が高まる</div>
+            </div>
+
+            <div class="metric-card">
+                <h3 class="metric-title">📊 10年債利回り</h3>
+                <div class="metric-value neutral">4.15%</div>
+                <div class="metric-change negative">-0.05%</div>
+                <div class="metric-description">政策金利見通しの調整により小幅下落</div>
+            </div>
+
+            <div class="metric-card">
+                <h3 class="metric-title">🌍 VIX指数</h3>
+                <div class="metric-value positive">18.5</div>
+                <div class="metric-change negative">-1.2 (-6.1%)</div>
+                <div class="metric-description">市場の不安心理が緩和</div>
+            </div>
+        </div>
+
+        <div class="news-section">
+            <h2 class="news-title">📰 重要ニュース</h2>
+            
+            <div class="news-item">
+                <div class="news-time">09:30 JST</div>
+                <h4>日銀金融政策決定会合、政策金利据え置きを決定</h4>
+                <p>日本銀行は本日の金融政策決定会合で政策金利を現行の-0.1%に据え置くことを決定。市場予想通りでしたが、今後の政策変更の可能性について言及がありました。</p>
+            </div>
+
+            <div class="news-item">
+                <div class="news-time">08:45 JST</div>
+                <h4>米国雇用統計、非農業部門雇用者数が予想を上回る</h4>
+                <p>12月の米国非農業部門雇用者数は前月比+216,000人増と市場予想の+170,000人を上回りました。失業率は3.7%で前月と同水準を維持。</p>
+            </div>
+
+            <div class="news-item">
+                <div class="news-time">07:20 JST</div>
+                <h4>中国12月CPI、前年同月比+0.2%と小幅上昇</h4>
+                <p>中国の12月消費者物価指数（CPI）は前年同月比+0.2%上昇し、11月の-0.5%から転じました。デフレ懸念の一部緩和を示唆しています。</p>
+            </div>
+
+            <div class="news-item">
+                <div class="news-time">06:15 JST</div>
+                <h4>欧州中央銀行、政策金利据え置きを決定</h4>
+                <p>ECBは政策金利を現行の4.5%に据え置くことを決定。ラガルド総裁はインフレ抑制の進展を評価しつつ、今後の政策変更については慎重な姿勢を示しました。</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>📅 最終更新: <span id="lastUpdate"></span></p>
+            <p>💡 このレポートは毎朝自動更新されます | 🔗 <a href="#dashboard" onclick="showDashboard()">詳細ダッシュボード</a></p>
+        </div>
+    </div>
+
+    <script src="js/economic-dashboard.js"></script>
+    <style>
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .notification {
+            animation: slideIn 0.3s ease;
+        }
+    </style>
+</body>
+</html>

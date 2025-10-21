@@ -1,7 +1,7 @@
-timezone:    Europe/Berlin
+timezone:    Asia/Tokyo
 future:      false
 # Set baseurl to the base path of the site eg "/mytalk"
-baseurl:     "/github-slideshow"
+baseurl:     "/morning-economic-report"
 # The allowed values are 'rouge', 'pygments' or null.
 highlighter: rouge
 # markdown - Valid options are [ maruku | rdiscount | kramdown | redcarpet ]
@@ -17,9 +17,9 @@ plugins:
   - jemoji
 
 ## personalize your slide show
-title:       github-slideshow
-author:      GitHubTeacher
-description: A fun activity for learning Git and GitHub.
+title:       朝の経済分析レポート
+author:      経済分析チーム
+description: 毎朝の経済市場分析とダッシュボードレポート
 
 sass:
   style:     :compressed
